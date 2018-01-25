@@ -28,6 +28,10 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".CrimeImgGalleryActivity"
+            android:label="@string/disp_gallery_label"
+            android:parentActivityName=".CrimePagerActivity">
+        </activity>
     </application>
 
 </manifest>

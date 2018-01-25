@@ -47,6 +47,7 @@ public class CrimeFragment extends Fragment {
     private CheckBox mEnableFaceDetection;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mGalleryButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
 
@@ -183,6 +184,16 @@ public class CrimeFragment extends Fragment {
 
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         updatePhotoView();
+
+        mGalleryButton = (Button)v.findViewById(R.id.disp_gallery);
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = CrimeImgGalleryActivity
+                        .newIntent(getActivity(), mCrime.getId());
+                startActivity(intent);
+            }
+        });
 
         return v;
     }
