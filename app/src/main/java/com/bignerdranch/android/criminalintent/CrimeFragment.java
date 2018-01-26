@@ -65,7 +65,7 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
-        mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+        mPhotoFile = CrimeLab.get(getActivity()).getNewestPhotoFile(mCrime);
     }
 
     @Override
@@ -163,22 +163,29 @@ public class CrimeFragment extends Fragment {
             mSuspectButton.setEnabled(false);
         }
 
-        mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
-        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
+        mPhotoFile =  CrimeLab.get(getActivity()).createNewPhotoFile(mCrime);
+        final Intent testcaptureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         boolean canTakePhoto = mPhotoFile != null &&
-                captureImage.resolveActivity(packageManager) != null;
+                testcaptureImage.resolveActivity(getActivity().getPackageManager()) != null;
+
+        mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
+
         mPhotoButton.setEnabled(canTakePhoto);
 
-        if (canTakePhoto) {
-            Uri uri = Uri.fromFile(mPhotoFile);
-            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        }
+        mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
 
         mPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(captureImage, REQUEST_PHOTO);
+                mPhotoFile =  CrimeLab.get(getActivity()).createNewPhotoFile(mCrime);
+                final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                boolean canTakePhoto = mPhotoFile != null &&
+                        captureImage.resolveActivity(getActivity().getPackageManager()) != null;
+                if (canTakePhoto) {
+                    Uri uri = Uri.fromFile(mPhotoFile);
+                    captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                    startActivityForResult(captureImage, REQUEST_PHOTO);
+                }
             }
         });
 
@@ -268,6 +275,7 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updatePhotoView() {
+        mPhotoFile =  CrimeLab.get(getActivity()).getNewestPhotoFile(mCrime);
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {

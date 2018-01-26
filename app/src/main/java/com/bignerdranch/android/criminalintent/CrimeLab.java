@@ -13,6 +13,8 @@ import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +36,6 @@ public class CrimeLab {
         mDatabase = new CrimeBaseHelper(mContext)
                 .getWritableDatabase();
     }
-
 
     public void addCrime(Crime c) {
         ContentValues values = getContentValues(c);
@@ -75,7 +76,24 @@ public class CrimeLab {
         }
     }
 
-    public File getPhotoFile(Crime crime) {
+    private List<File> getCrimeImgFiles(File rootDir, String id){
+        File[] files = rootDir.listFiles();
+        List<File> act = new ArrayList<>();
+        for (File f : files){
+            if (f.getName().contains(id)){
+                act.add(f);
+            }
+        }
+        Collections.sort(act, new Comparator<File>() {
+            @Override
+            public int compare(File file, File t1) {
+                return -file.getName().compareTo(t1.getName());
+            }
+        });
+        return act;
+    }
+
+    public File getNewestPhotoFile(Crime crime) {
         File externalFilesDir = mContext
                 .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
@@ -83,7 +101,43 @@ public class CrimeLab {
             return null;
         }
 
-        return new File(externalFilesDir, crime.getPhotoFilename());
+        List<File> crimeImgFiles = this.getCrimeImgFiles(externalFilesDir, crime.getId().toString());
+        if (crimeImgFiles.isEmpty())
+            return null;
+        return new File(externalFilesDir, crimeImgFiles.get(0).getName());
+    }
+
+    public List<File> getPhotoFiles(String crimeId) {
+        File externalFilesDir = mContext
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+
+        List<File> crimeImgFiles = this.getCrimeImgFiles(externalFilesDir, crimeId);
+        List<File> out = new ArrayList<>();
+        for (File f : crimeImgFiles){
+            out.add(new File(externalFilesDir, f.getName()));
+        }
+        return out;
+    }
+
+    public List<File> getPhotoFiles(Crime crime) {
+        return this.getPhotoFiles(crime.getId().toString());
+    }
+
+    public File createNewPhotoFile(Crime crime) {
+        File externalFilesDir = mContext
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+
+        List<File> crimeImgFiles = this.getCrimeImgFiles(externalFilesDir, crime.getId().toString());
+        String name = "CrimeImg_"+crime.getId().toString()+"_"+crimeImgFiles.size()+".jpg";
+        return new File(externalFilesDir, name);
     }
 
     public void updateCrime(Crime crime) {
