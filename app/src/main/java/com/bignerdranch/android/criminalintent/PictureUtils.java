@@ -1,9 +1,18 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
+
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
+
+import java.util.List;
 
 public class PictureUtils {
     public static Bitmap getScaledBitmap(String path, Activity activity) {
@@ -36,5 +45,25 @@ public class PictureUtils {
         options.inSampleSize = inSampleSize;
 
         return BitmapFactory.decodeFile(path, options);
+    }
+
+    public static Canvas outlineFaces(Bitmap bitmap, Context context) {
+        SuspectFaceDetector faceDector = new SuspectFaceDetector(context);
+        List <Face> faces  =  faceDector.detectFaces(bitmap);
+
+        Canvas canvas = new Canvas(bitmap);
+
+        for(Face face: faces){
+            float height = face.getHeight();
+            float width = face.getWidth();
+            Float centerx = face.getPosition().x;
+            Float centery = face.getPosition().y;
+
+            int left = Math.round(centerx - width/2);
+
+//            canvas.drawRect(new Rect());
+
+        }
+        return canvas;
     }
 }
