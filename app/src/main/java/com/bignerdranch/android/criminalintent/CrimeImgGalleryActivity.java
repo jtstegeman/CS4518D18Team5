@@ -95,7 +95,7 @@ public class CrimeImgGalleryActivity extends AppCompatActivity {
             ImageView v = new ImageView(ctx);
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     imgs.get(i).getPath(), ctx);
-            if (faceDetectEnabled) suspectFaceDetector.boxFaces(bitmap);
+            if (faceDetectEnabled) bitmap = suspectFaceDetector.boxFaces(bitmap);
             v.setImageBitmap(bitmap);
             v.setAdjustViewBounds(true);
             return v;
