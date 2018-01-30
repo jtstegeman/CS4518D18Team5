@@ -83,6 +83,7 @@ public class CrimeImgGalleryActivity extends AppCompatActivity {
             ImageView v = new ImageView(ctx);
             v.setImageBitmap(PictureUtils.getScaledBitmap(
                     imgs.get(i).getPath(), ctx));
+            v.setAdjustViewBounds(true);
             return v;
         }
     }
