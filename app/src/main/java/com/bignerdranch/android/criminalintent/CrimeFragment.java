@@ -288,6 +288,7 @@ public class CrimeFragment extends Fragment {
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
+            bitmap = bitmap.copy(bitmap.getConfig(), true);
             FaceDetector detector = new FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false).build();
             Frame frame = new Frame.Builder().setBitmap(bitmap).build();
             SparseArray<Face> faces = detector.detect(frame);
