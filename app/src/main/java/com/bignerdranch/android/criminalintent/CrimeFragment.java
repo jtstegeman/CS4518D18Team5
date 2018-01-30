@@ -197,7 +197,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = CrimeImgGalleryActivity
-                        .newIntent(getActivity(), mCrime.getId());
+                        .newIntent(getActivity(), mCrime.getId(), mCrime.doFaceDetect());
                 startActivity(intent);
             }
         });

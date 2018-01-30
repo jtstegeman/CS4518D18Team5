@@ -27,10 +27,13 @@ import java.util.UUID;
 public class CrimeImgGalleryActivity extends AppCompatActivity {
     private static final String EXTRA_CRIME_ID =
             "com.bignerdranch.android.criminalintent.crime_id";
+    private static final String EXTRA_FACE_DETECT =
+            "com.bignerdranch.android.criminalintent.face_detect";
 
-    public static Intent newIntent(Context packageContext, UUID crimeId) {
+    public static Intent newIntent(Context packageContext, UUID crimeId, Boolean faceDetect) {
         Intent intent = new Intent(packageContext, CrimeImgGalleryActivity.class);
         intent.putExtra(EXTRA_CRIME_ID, crimeId);
+        intent.putExtra(EXTRA_FACE_DETECT, faceDetect);
         return intent;
     }
 
@@ -54,7 +57,8 @@ public class CrimeImgGalleryActivity extends AppCompatActivity {
 
         final List<File> imgs;
         final Activity ctx;
-        public ImageAdapter(List<File> imgs, Activity context){
+
+        public ImageAdapter(List<File> imgs, Activity context) {
             this.imgs = imgs;
             ctx = context;
         }
@@ -71,7 +75,7 @@ public class CrimeImgGalleryActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int i) {
-            return 0x2000+i;
+            return 0x2000 + i;
         }
 
         @Override
