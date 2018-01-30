@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -297,9 +298,9 @@ public class CrimeFragment extends Fragment {
                 Frame frame = new Frame.Builder().setBitmap(bitmap).build();
                 SparseArray<Face> faces = detector.detect(frame);
                 Paint paint = new Paint();
-                paint.setARGB(255, 0, 255, 0);
+                paint.setColor(Color.CYAN);
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(1);
+                paint.setStrokeWidth(5);
                 Canvas canvas = new Canvas(bitmap);
                 for (int i = 0; i < faces.size(); i++) {
                     Face face = faces.get(i);
