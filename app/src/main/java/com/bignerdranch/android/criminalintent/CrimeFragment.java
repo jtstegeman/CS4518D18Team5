@@ -18,6 +18,7 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -302,7 +303,13 @@ public class CrimeFragment extends Fragment {
                 Canvas canvas = new Canvas(bitmap);
                 for (int i = 0; i < faces.size(); i++) {
                     Face face = faces.get(i);
-                    canvas.drawRect(face.getPosition().x, face.getPosition().y, face.getPosition().x + face.getWidth(), face.getPosition().y + face.getHeight(), paint);
+                    if (face != null) {
+                        canvas.drawRect(face.getPosition().x, face.getPosition().y, face.getPosition().x + face.getWidth(), face.getPosition().y + face.getHeight(), paint);
+                        Log.d("Alex",String.format("X = %f, Y = %f, Width = %f, Height = %f", face.getPosition().x, face.getPosition().y, face.getWidth(), face.getHeight()));
+                    }
+                    else{
+                        Log.d("Alex", "Face was null");
+                    }
                 }
                 mPhotoView.draw(canvas);
             } else {
