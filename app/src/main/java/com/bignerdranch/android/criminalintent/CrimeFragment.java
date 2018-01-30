@@ -312,11 +312,8 @@ public class CrimeFragment extends Fragment {
                         Log.d("Alex", "Face was null");
                     }
                 }
-                mPhotoView.draw(canvas);
-                Log.d("Alex", "Updated canvas");
-            } else {
-                mPhotoView.setImageBitmap(bitmap);
             }
+            mPhotoView.setImageBitmap(bitmap);
         }
     }
 }
