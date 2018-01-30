@@ -37,13 +37,19 @@ public class CrimeImgGalleryActivity extends AppCompatActivity {
         return intent;
     }
 
+    private Boolean faceDetectEnabled;
+    private SuspectFaceDetector suspectFaceDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_gallery);
 
+        suspectFaceDetector = new SuspectFaceDetector(this);
+
         UUID crimeId = (UUID) getIntent()
                 .getSerializableExtra(EXTRA_CRIME_ID);
+        faceDetectEnabled = getIntent().getBooleanExtra(EXTRA_FACE_DETECT, false);
 
         CrimeLab lab = CrimeLab.get(this);
 
@@ -51,6 +57,12 @@ public class CrimeImgGalleryActivity extends AppCompatActivity {
 
         GridView gal = (GridView) findViewById(R.id.gallery_table);
         gal.setAdapter(new ImageAdapter(imgs, this));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        suspectFaceDetector.release();
     }
 
     private class ImageAdapter extends BaseAdapter {
@@ -81,8 +93,10 @@ public class CrimeImgGalleryActivity extends AppCompatActivity {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             ImageView v = new ImageView(ctx);
-            v.setImageBitmap(PictureUtils.getScaledBitmap(
-                    imgs.get(i).getPath(), ctx));
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    imgs.get(i).getPath(), ctx);
+            if (faceDetectEnabled) suspectFaceDetector.boxFaces(bitmap);
+            v.setImageBitmap(bitmap);
             v.setAdjustViewBounds(true);
             return v;
         }
