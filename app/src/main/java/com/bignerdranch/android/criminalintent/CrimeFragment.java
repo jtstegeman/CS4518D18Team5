@@ -50,6 +50,7 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_PHOTO= 2;
 
     private Crime mCrime;
+    private SuspectFaceDetector mSuspectFaceDetector;
     private File mPhotoFile;
     private EditText mTitleField;
     private Button mDateButton;
@@ -75,6 +76,7 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+        mSuspectFaceDetector = new SuspectFaceDetector(getContext());
         mPhotoFile = CrimeLab.get(getActivity()).getNewestPhotoFile(mCrime);
     }
 
@@ -217,6 +219,12 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSuspectFaceDetector.release();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -293,25 +301,7 @@ public class CrimeFragment extends Fragment {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
             if(mCrime.doFaceDetect()) {
-                bitmap = bitmap.copy(bitmap.getConfig(), true);
-                FaceDetector detector = new FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false).build();
-                Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-                SparseArray<Face> faces = detector.detect(frame);
-                Paint paint = new Paint();
-                paint.setColor(Color.CYAN);
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(5);
-                Canvas canvas = new Canvas(bitmap);
-                for (int i = 0; i < faces.size(); i++) {
-                    Face face = faces.valueAt(i);
-                    if (face != null) {
-                        canvas.drawRect(face.getPosition().x, face.getPosition().y, face.getPosition().x + face.getWidth(), face.getPosition().y + face.getHeight(), paint);
-                        Log.d("Alex",String.format("X = %f, Y = %f, Width = %f, Height = %f", face.getPosition().x, face.getPosition().y, face.getWidth(), face.getHeight()));
-                    }
-                    else{
-                        Log.d("Alex", "Face was null");
-                    }
-                }
+                mSuspectFaceDetector.boxFaces(bitmap);
             }
             mPhotoView.setImageBitmap(bitmap);
         }

@@ -2,6 +2,10 @@ package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.vision.Frame;
@@ -42,6 +46,23 @@ public class SuspectFaceDetector {
             }
         }
         return goodFaces;
+    }
+
+    public Bitmap boxFaces(Bitmap image) {
+        List<Face> faces = detectFaces(image);
+        Paint paint = new Paint();
+        paint.setColor(Color.CYAN);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        Canvas canvas = new Canvas(image);
+        for (Face face : faces) {
+            canvas.drawRect(face.getPosition().x,
+                    face.getPosition().y,
+                    face.getPosition().x + face.getWidth(),
+                    face.getPosition().y + face.getHeight(),
+                    paint);
+        }
+        return image;
     }
 
     /**
