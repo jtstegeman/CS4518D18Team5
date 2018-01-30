@@ -54,7 +54,7 @@ public class SuspectFaceDetector {
         Paint paint = new Paint();
         paint.setColor(Color.CYAN);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(15);
         Canvas canvas = new Canvas(image);
         for (Face face : faces) {
             canvas.drawRect(face.getPosition().x,
