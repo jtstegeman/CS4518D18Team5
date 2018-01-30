@@ -135,6 +135,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setFaceDetect(isChecked);
+                updatePhotoView();
             }
         });
 
@@ -289,18 +290,22 @@ public class CrimeFragment extends Fragment {
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
-            bitmap = bitmap.copy(bitmap.getConfig(), true);
-            FaceDetector detector = new FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false).build();
-            Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-            SparseArray<Face> faces = detector.detect(frame);
-            Paint paint = new Paint();
-            paint.setARGB(255, 0, 255, 0);
-            Canvas canvas = new Canvas(bitmap);
-            for (int i = 0; i < faces.size(); i++) {
-                Face face = faces.get(i);
-                canvas.drawRect(face.getPosition().x, face.getPosition().y, face.getPosition().x + face.getWidth(), face.getPosition().y + face.getHeight(), paint);
+            if(mCrime.doFaceDetect()) {
+                bitmap = bitmap.copy(bitmap.getConfig(), true);
+                FaceDetector detector = new FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false).build();
+                Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+                SparseArray<Face> faces = detector.detect(frame);
+                Paint paint = new Paint();
+                paint.setARGB(255, 0, 255, 0);
+                Canvas canvas = new Canvas(bitmap);
+                for (int i = 0; i < faces.size(); i++) {
+                    Face face = faces.get(i);
+                    canvas.drawRect(face.getPosition().x, face.getPosition().y, face.getPosition().x + face.getWidth(), face.getPosition().y + face.getHeight(), paint);
+                }
+                mPhotoView.draw(canvas);
+            } else {
+                mPhotoView.setImageBitmap(bitmap);
             }
-            mPhotoView.draw(canvas);
         }
     }
 }
