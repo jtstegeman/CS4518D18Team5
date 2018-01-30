@@ -301,7 +301,6 @@ public class CrimeFragment extends Fragment {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
             if(mCrime.doFaceDetect()) {
-                bitmap = bitmap.copy(bitmap.getConfig(), true);
                 mSuspectFaceDetector.boxFaces(bitmap);
             }
             mPhotoView.setImageBitmap(bitmap);

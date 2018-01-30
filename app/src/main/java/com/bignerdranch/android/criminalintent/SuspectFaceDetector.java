@@ -49,6 +49,7 @@ public class SuspectFaceDetector {
     }
 
     public Bitmap boxFaces(Bitmap image) {
+        if (!image.isMutable()) image = image.copy(image.getConfig(), true);
         List<Face> faces = detectFaces(image);
         Paint paint = new Paint();
         paint.setColor(Color.CYAN);
