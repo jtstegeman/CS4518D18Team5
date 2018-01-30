@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -16,6 +18,7 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.File;
 import java.util.Date;
@@ -282,7 +289,17 @@ public class CrimeFragment extends Fragment {
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
-            mPhotoView.setImageBitmap(bitmap);
+            FaceDetector detector = new FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false).build();
+            Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+            SparseArray<Face> faces = detector.detect(frame);
+            Paint paint = new Paint();
+            paint.setARGB(255, 0, 255, 0);
+            Canvas canvas = new Canvas(bitmap);
+            for (int i = 0; i < faces.size(); i++) {
+                Face face = faces.get(i);
+                canvas.drawRect(face.getPosition().x, face.getPosition().y, face.getPosition().x + face.getWidth(), face.getPosition().y + face.getHeight(), paint);
+            }
+            mPhotoView.draw(canvas);
         }
     }
 }
