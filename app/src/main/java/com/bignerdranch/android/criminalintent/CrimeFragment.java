@@ -297,6 +297,8 @@ public class CrimeFragment extends Fragment {
                 SparseArray<Face> faces = detector.detect(frame);
                 Paint paint = new Paint();
                 paint.setARGB(255, 0, 255, 0);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(1);
                 Canvas canvas = new Canvas(bitmap);
                 for (int i = 0; i < faces.size(); i++) {
                     Face face = faces.get(i);
