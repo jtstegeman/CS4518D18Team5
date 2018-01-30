@@ -303,7 +303,7 @@ public class CrimeFragment extends Fragment {
                 paint.setStrokeWidth(5);
                 Canvas canvas = new Canvas(bitmap);
                 for (int i = 0; i < faces.size(); i++) {
-                    Face face = faces.get(i);
+                    Face face = faces.valueAt(i);
                     if (face != null) {
                         canvas.drawRect(face.getPosition().x, face.getPosition().y, face.getPosition().x + face.getWidth(), face.getPosition().y + face.getHeight(), paint);
                         Log.d("Alex",String.format("X = %f, Y = %f, Width = %f, Height = %f", face.getPosition().x, face.getPosition().y, face.getWidth(), face.getHeight()));
@@ -313,6 +313,7 @@ public class CrimeFragment extends Fragment {
                     }
                 }
                 mPhotoView.draw(canvas);
+                Log.d("Alex", "Updated canvas");
             } else {
                 mPhotoView.setImageBitmap(bitmap);
             }
